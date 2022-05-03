@@ -91,11 +91,34 @@ void Mode0()
   LedCube_SetLed( ThreeRow, ThreeColumn, 3 ); 
 }
 
+int m1R = 0, m1C = 0, m1P = 0;
+void Mode1(){
+  LedCube_ClearData();
+  
+  LedCube_SetLed(m1R, m1C, m1P);
+
+  // Move to next location.
+  m1R++;
+  if(m1R >= 4){
+    m1R = 0;
+    m1C++;
+  }
+  if(m1C >= 4){
+    m1C = 0;
+    m1P++;
+  }
+  if(m1P >= 4){
+    m1P = 0;
+  }
+}
+
 // setup code, run once:
 void setup()
 {
   MsTimer2::set(4, NextDisplay ); // 4ms period
   MsTimer2::start();
+
+  Serial.begin(9600);
 
   // A3-A0 to outputs.
   DDRC |= 0x0f;
@@ -121,15 +144,25 @@ void loop()
   // 2000 millisecond timer to update display
   if ( millis() - Timer >= 2000 )
   {
-      // Extra modes could be done here.
-      Mode0();
+    // Extra modes could be done here.
+    Serial.out.println("Mode: " + Mode);
+    switch (Mode){
+      case 0:
+        Mode0();
+        break;
+      case 1:
+        Mode1();
+        break;
+    }
+      
      
     Timer += 2000; // Update timer
-
   } // End of timer if.
 
-  if( ButtonTest() == 1 )
+  if( ButtonNextState() == 2 )
   {
-      // Mode could be changed here.
+      Mode++;
+      if( Mode >= 3 )
+        Mode = 0;
   }
 } // End of loop.
