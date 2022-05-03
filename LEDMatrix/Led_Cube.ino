@@ -1,3 +1,11 @@
+/* Pins:
+ * 5V = 5V
+ * P0-P3 = A0-A3
+ * DIn = D11
+ * Clk = D13
+*/
+
+
 #include <SPI.h>
 #include <MsTimer2.h>
 
