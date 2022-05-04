@@ -5,7 +5,7 @@ public class PatternVisualizer {
         Pattern p = new Pattern();
 
         while (true){
-            p.Mode3();
+            p.Mode4();
   
             
             s.nextLine();

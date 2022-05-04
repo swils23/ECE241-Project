@@ -117,10 +117,26 @@ public class Pattern {
 
     }
 
-    // TODO random leds?
+    // checkerboard pattern
     public void Mode4(){
 
+        m.clearMatrix();        
+        for(int i = 0; i < 4; i++) // iterate planes
+            for(int j = 0; j < 4; j++) // iterate rows
+                for(int k = 0; k < 4; k++){ // iterate columns
+                    if((i + j + k) % 2 == 0 && (count % 2 == 0)) m.setLed(k, j, i); // even cycle and even led position
+                    if((i + j + k) % 2 == 1 && (count % 2 == 1)) m.setLed(k, j, i); // odd cycle and odd led position
+                }
+        count++;
+        
+
+        m.printMatrix();
+        
     }
+
+    // TODO random leds?
+
+
 
     private int ZeroRow  = 0, ZeroColumn  = 0;
     private void MoveZero()
