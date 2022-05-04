@@ -8,11 +8,10 @@
 
 #include <SPI.h>
 #include <MsTimer2.h>
+#include <LiquidCrystal.h>
 #include "LedCubeData.h"
-
 #include "ButtonDebounce.h"
 #include "EncoderMonitor.h"
-#include <LiquidCrystal.h>
 
 LiquidCrystal lcd(A5, A4, 5, 6, 7, 8);
 
@@ -30,7 +29,7 @@ void NextDisplay()
 } // End of NextDisplay
 
 // As a test, each plane is given a location (row,column) and that plane is moved through all its locations.
-int ZeroRow = 0, ZeroColumn = 0;
+int ZeroRow = 0, ZeroColumn = 0, OneRow = 1, OneColumn = 1, TwoRow = 2, TwoColumn = 2, ThreeRow = 3, ThreeColumn = 3;
 void MoveZero(){
   ZeroColumn++;
   if (ZeroColumn >= 4){
@@ -41,7 +40,6 @@ void MoveZero(){
   }
 } // End of MoveZero
 
-int OneRow = 1, OneColumn = 1;
 void MoveOne(){
   OneColumn++;
   if (OneColumn >= 4){
@@ -50,9 +48,8 @@ void MoveOne(){
     if (OneRow >= 4)
       OneRow = 0;
   }
-} // End of MoveOne
+}
 
-int TwoRow = 2, TwoColumn = 2;
 void MoveTwo(){
   TwoColumn++;
   if (TwoColumn >= 4){
@@ -61,9 +58,8 @@ void MoveTwo(){
     if (TwoRow >= 4)
       TwoRow = 0;
   }
-} // End of MoveTwo
+}
 
-int ThreeRow = 3, ThreeColumn = 3;
 void MoveThree(){
   ThreeColumn++;
   if (ThreeColumn >= 4){
@@ -72,7 +68,7 @@ void MoveThree(){
     if (ThreeRow >= 4)
       ThreeRow = 0;
   }
-} // End of MoveThree
+}
 
 void Mode0(){
   LedCube_ClearData();
@@ -86,7 +82,7 @@ void Mode0(){
   LedCube_SetLed(ThreeRow, ThreeColumn, 3);
 }
 
-
+// Reset all variables used by patterns.
 void reset(){
   r = 0;
   c = 0;
@@ -115,7 +111,7 @@ void Mode1(){
   }
 }
 
-// // lights up 4x4 squares on each plane, then rotates and lights up 4x4 squares on each column, then rotates and lights up 4x4 squares on each row
+// lights up 4x4 squares on each plane, then rotates and lights up 4x4 squares on each column, then rotates and lights up 4x4 squares on each row
 void Mode2(){
   LedCube_ClearData();
 
@@ -189,28 +185,27 @@ void Mode3(){
   }
 }
 
-
 // setup code, run once:
 void setup(){
   MsTimer2::set(4, NextDisplay); // 4ms period
   MsTimer2::start();
-
   // A3-A0 to outputs.
   DDRC |= 0x0f;
   // Set up display data.
   LedCube_ClearData();
-  // Start up the SPI
+  // SPI setup & configuration.
   SPI.begin();
-  // Set the parameters for the transfers.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
-  // Initialize inputs
+  // Initialize input monitors
   ButtonInitialize();
   EncoderInitialize();
   // Timers for LED and LCD displays
   LedTimer = millis();
   LcdTimer = millis();
   // Serial.begin(9600); // Serial output for debugging
+  // Config LCD with 16x2 display
   lcd.begin(16, 2);
+  // Initialize LED cube with default values
   reset();
   mode = 0; // default pattern
   refresh = 2000; // default refresh rate
@@ -256,4 +251,4 @@ void loop(){ // super loop
     // Serial.println("Mode: " + String(mode)); // debug
     // Serial.println("Refresh: " + String(refresh)); // debug
   }
-} // End of loop.
+}
