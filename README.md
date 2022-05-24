@@ -1,38 +1,38 @@
-# **LED CUBE:**
-
-3 Dimensional graphical display of LEDs, known as an LED cube.
-
-4x4 cube
-
-**Examples:**
-
-https://www.youtube.com/watch?v=vf_IpviMiFU
-
-https://www.instructables.com/4x4x4-LED-Cube-Arduino-Uno/
+### Goals:
+* To create an LED matrix - a 4x4x4 cube of LEDs
+* 64 independently addressable LEDs
+* Interfaces to our custom ECE lab board, driven by an Arduino Nano
 
 
-Programming will be different than the examples, but the basic idea is the same.
+* Button Press: Change between various pre-defined patterns/modes
+* Dial Rotation: Change the update speed of the pattern
+* LCD Output: Display the current pattern and update speed
 
----
-## Assignment
-Assignment details found in E_LED_Interface.pdf
+### Software:
+**Arduino Code**\
+[Led_Cube.ino](./LED_Cube/Led_Cube.ino) - Main\
+[LedCubeData.h](./LED_Cube/LedCubeData.h) - Contains methods\
+[ButtonDebounce.h](./LED_Cube/ButtonDebounce.h) - Monitors and debounces button presses\
+[EncoderMonitor.h](./LED_Cube/EncoderMonitor.h) - Used to monitor encoder position
 
-**Grading:**
+**Java:**
+Testing suite
 
-1) At least three separate modes of operation (flash pattern) for the cube. Including a 'test' mode showing each individual LED is addressable. (7 points)
+### Patterns:
+* **Mode0: Default mode provided with assignment**\
+As a test, each plane is given a location (row,column) and that plane is moved through all its locations.
 
-2) Mode changes on debounced button press. (5 points)
+* **Mode1: LED Test**\
+All LEDs are turned on and then off one at a time by iterating through each r,c,p (row, col, plane) position.
 
-3) Presentation (3 points)
+* **Mode2: Squares**\
+Lights up 4x4 squares on each plane, then rotates and lights up 4x4 squares on each column, then rotates and lights up 4x4 squares on each row.
 
----
-## Ideas/Planned
+* **Mode3: Snake**\
+"Snakes" through the matrix 
 
+* **Mode4: Checkerboard (Chkrbrd)**\
+Alternating checkerboard pattern on each plane, inverting every cycle.
 
-### Pattern Brainstorming
-- Fill in one by one
-- Waves
-- Corner to corner, stack
+  
 
-### Ideas
- - GUI custom pattern generator & visualizer (hosted on github?)
