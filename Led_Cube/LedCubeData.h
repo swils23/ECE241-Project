@@ -16,8 +16,7 @@ int LedCube_CurrentPlane = 0;
 
 // Support routine to move to next plane, returning
 // the bit pattern for the next plane to be displayed.
-int LedCube_NextPlane()
-{ 
+int LedCube_NextPlane(){ 
     // Move to next plane.
     LedCube_CurrentPlane++;
     // Check for wrap.
@@ -27,22 +26,20 @@ int LedCube_NextPlane()
     // Send back the current bit pattern.
     return LedCube_Planes[LedCube_CurrentPlane];
     // BIT PATTERN FLIPPED, for reversed cube.
-} // End of LedCube_NextPlane
+}
 
 // Initialization routine, sets all leds to off.
-void LedCube_ClearData()
-{
+void LedCube_ClearData(){
     // Loop through the planes.
     for( int k = 0; k < LEDCUBE_NUMBER_PLANES; k++ )
         LedCube_Planes[k] = 0xffff;
            // Note a bit being 1 means off.
 
-} // End of LedCube_ClearData
+}
 
 // This function turns on the led at r,c,p 
 // (row, column, plane.
-void LedCube_SetLed( int r, int c, int p )
-{
+void LedCube_SetLed( int r, int c, int p ){
     // make copy of r,c,p
     int plane = p, row = r, col = c;
     
@@ -61,11 +58,10 @@ void LedCube_SetLed( int r, int c, int p )
     LedCube_Planes[plane] 
          &= ~(1 << (row*LEDCUBE_NUMBER_COLUMNS+col));
 
-} // End of LedCube_SetLed
+}
 
 // This function will turn off the led at r,c,p
-void LedCube_ClearLed( int r, int c, int p )
-{
+void LedCube_ClearLed( int r, int c, int p ){
     // Make a copy of r,c,p
     int plane = p, row = r, col = c;
     // Error check r,c,p
@@ -81,7 +77,7 @@ void LedCube_ClearLed( int r, int c, int p )
     // force bit high at r,c,p turning it off
     LedCube_Planes[plane] 
          |= (1 << (row*LEDCUBE_NUMBER_COLUMNS+col));
-
-} // End of LedCube_ClearLed
+         
+}
 
 #endif

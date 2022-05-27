@@ -1,5 +1,5 @@
 /*
-PINS
+PINOUT - Led Cube to Arduino
   5V = 5V
   P0-P3 = A0-A3
   DIn = D11
@@ -10,21 +10,21 @@ PINS
 #include <SPI.h>
 #include <MsTimer2.h>
 #include <LiquidCrystal.h>
-#include "LedCubeData.h"
-#include "ButtonDebounce.h"
-#include "EncoderMonitor.h"
+#include "LedCubeData.h" // Contains methods to interface with LED cube
+#include "ButtonDebounce.h" // Monitors and debounces button presses
+#include "EncoderMonitor.h" // Used to monitor encoder position
 
-LiquidCrystal lcd(A5, A4, 5, 6, 7, 8);
-unsigned long LedTimer = 0, LcdTimer = 0;
-int r, c, p, count, mode, refresh;
-char modeName[9];
+LiquidCrystal lcd(A5, A4, 5, 6, 7, 8); // Initialize LCD
+unsigned long LedTimer = 0, LcdTimer = 0; // Timers
+int r, c, p, count, mode, refresh; // Pattern variables and counters
+char modeName[9]; // Initialize mode name
 
-// Sets the name of the mode/pattern to passed string.
+// Sets the name of the mode/pattern to passed string. (strcpy alternative)
 void setModeName(char *x){
   for (int i = 0; i < 9; i++) modeName[i] = x[i];
 }
 
-// Reset all variables used by patterns.
+// Reset all pattern variables and counters.
 void reset(){
   r = 0;
   c = 0;
@@ -33,45 +33,23 @@ void reset(){
   setModeName("");
 }
 
-void NextDisplay()
-{
+void NextDisplay(){
   // Send next pattern to Shift Registers.
   PORTC |= 0x0f; // set bottom bit low, turning off display.
   SPI.transfer16(~LedCube_NextPlane());
   // Turn on the current plane.
   PORTC &= ~(1 << LedCube_CurrentPlane);
-
-} // End of NextDisplay
-
+}
 
 
-/* MODES
-Mode0(): Default mode provided with assignment
-  As a test, each plane is given a location (row,column) and that plane is moved through all its locations.
 
-Mode1(): LED Test
-  All LEDs are turned on and then off one at a time by iterating through each r,c,p (row, col, plane) position.
-
-Mode2(): Squares
-  Lights up 4x4 squares on each plane, then rotates and lights up 4x4 squares on each column, then rotates and lights up 4x4 squares on each row.
-
-Mode3(): Snake
-  "Snakes" through the matrix eventually lighting up the entire matrix, then unlights the entire matrix in the same fashion.
-
-Mode4(): Checkerboard (Chkrbrd)
-  Alternating checkerboard pattern on each plane, inverting every cycle.
-
-******** TODO/Ideas: ********
-Mode5(): Random
-  Randomly lights up LEDs on each plane.
-
-Mode6(): Bars
-  Horiz or vertical bars?
-******** TODO/Ideas ********
+/*
+Mode0(): Default
+    As a test, each plane is given a location (row,column) and that plane is moved through all its locations.
 */
 int ZeroRow = 0, ZeroColumn = 0, OneRow = 1, OneColumn = 1, TwoRow = 2, TwoColumn = 2, ThreeRow = 3, ThreeColumn = 3;
 void Mode0(){
-  setModeName("Default");
+  setModeName("Default"); // Set mode name to be displayed on the LCD.
   LedCube_ClearData();
   ZeroColumn++;
   if (ZeroColumn >= 4){
@@ -103,8 +81,12 @@ void Mode0(){
   LedCube_SetLed(ThreeRow, ThreeColumn, 3);
 }
 
+/*
+Mode1(): LED Test
+    All LEDs are turned on and then off one at a time by iterating through each r,c,p (row, col, plane) position.
+*/
 void Mode1(){
-  setModeName("LED Test");
+  setModeName("LED Test"); // Set mode name to be displayed on the LCD.
   LedCube_ClearData();
   // set data
   LedCube_SetLed(r, c, p);
@@ -124,8 +106,12 @@ void Mode1(){
   }
 }
 
+/*
+Mode2(): Squares
+    Lights up 4x4 squares on each plane, then rotates and lights up 4x4 squares on each column, then rotates and lights up 4x4 squares on each row.
+*/
 void Mode2(){
-  setModeName("Squares");
+  setModeName("Squares"); // Set mode name to be displayed on the LCD.
   LedCube_ClearData();
 
   if (count < 4){
@@ -152,8 +138,12 @@ void Mode2(){
   }
 }
 
+/*
+Mode3(): Snake
+    "Snakes" through the matrix eventually lighting up the entire matrix, then unlights the entire matrix in the same fashion.
+*/
 void Mode3(){
-  setModeName("Snake");
+  setModeName("Snake"); // Set mode name to be displayed on the LCD.
 
   LedCube_SetLed(r, c, p);
   // ticker
@@ -195,8 +185,12 @@ void Mode3(){
   }
 }
 
+/*
+Mode4(): Checkerboard (Chkrbrd)
+    Alternating checkerboard pattern on each plane, inverting every cycle.
+*/
 void Mode4(){
-  setModeName("Chkrbrd");
+  setModeName("Chkrbrd"); // Set mode name to be displayed on the LCD.
   LedCube_ClearData();
   for(int i = 0; i < 4; i++) // iterate planes
     for(int j = 0; j < 4; j++) // iterate rows
@@ -233,28 +227,28 @@ void setup(){
   refresh = 1000; // default refresh rate
 }
 
-// super loop
+// superloop
 void loop(){
   // LED Pattern Display
   if (millis() - LedTimer >= refresh){ // LED refresh rate
     switch (mode){
-    case 0:
+    case 0: // mode 0
       Mode0();
       break;
-    case 1:
+    case 1: // mode 1
       Mode1();
       break;
-    case 2:
+    case 2: // mode 2
       Mode2();
       break;
-    case 3:
+    case 3: // mode 3
       Mode3();
       break;
-    case 4:
+    case 4: // mode 4
       Mode4();
       break;
     }
-    LedTimer += refresh;
+    LedTimer += refresh; // update timer
   }
   // Encoder input for custom refresh rate
   refresh = 1000 + (encoderPosition/4 * 100);
